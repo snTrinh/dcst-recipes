@@ -54,7 +54,8 @@ const UPDATE_RECIPE = gql`
   }
 `;
 
-export default function RecipeDialog({ open, onClose, onSaved, recipe }: RecipeDialogProps) {
+export default function RecipeDialog({ open, onClose, onSaved = () => {}, recipe }: RecipeDialogProps) {
+
   const [title, setTitle] = useState("");
   const [ingredientsSections, setIngredientsSections] = useState<IngredientSection[]>([
     { name: "Main", items: "" },

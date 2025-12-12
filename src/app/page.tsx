@@ -16,7 +16,7 @@ export default function HomePage() {
 
   return (
     <div>
-      <NavBar />
+      <NavBar onRecipesUpdated={refresh}/>
 
       <div className="p-4 max-w-2xl mx-auto space-y-4 mt-4">
         {recipes.length === 0 ? (

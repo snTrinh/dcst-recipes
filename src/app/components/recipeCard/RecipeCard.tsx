@@ -90,7 +90,15 @@ export default function RecipeCard({ recipe, onUpdated, token }: RecipeCardProps
   <span className="block whitespace-pre-line">{recipe.instructions}</span>
 </p>
       <p className="ml-10 mt-2"><strong>Cuisine:</strong> {capitalize(recipe.cuisine)}</p>
-      <p className="ml-10 mt-2"><strong>Inspo:</strong> {recipe.inspoLink}</p>
+      <p className="ml-10 mt-2"><strong>Reference: </strong> 
+       <a
+      href={recipe.inspoLink}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-blue-600 underline hover:text-blue-800"
+    >
+       {recipe.inspoLink}
+    </a></p>
 
       <RecipeDialog
   open={editOpen}
