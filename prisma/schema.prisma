@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+
+enum Cuisine {
+  CHINESE
+  INDIAN
+  ITALIAN
+  MEXICAN
+  VIETNAMESE
+  WESTERN
+  
+}
+
+
+model Recipe {
+  id          String   @id @default(uuid())
+  title       String
+  ingredients Json
+  instructions String
+  createdAt   DateTime @default(now())
+  ownerEmail  String
+  cuisine      Cuisine
+  inspoLink    String?
+}
