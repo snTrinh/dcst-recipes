@@ -93,11 +93,13 @@ export default function RecipeCard({ recipe, onUpdated, token }: RecipeCardProps
       <p className="ml-10 mt-2"><strong>Inspo:</strong> {recipe.inspoLink}</p>
 
       <RecipeDialog
-        open={editOpen}
-        onClose={() => setEditOpen(false)}
-        recipe={recipe}      
-        onSaved={onUpdated}   
-      />
+  open={editOpen}
+  onClose={() => setEditOpen(false)}
+  recipe={recipe}        
+  token={token}
+  onSaved={onUpdated}     
+/>
+
     </div>
   );
 }

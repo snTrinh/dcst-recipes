@@ -1,54 +1,68 @@
-
-import { useAppDispatch, useAppSelector } from "@/lib/hooks";
-import { setRecipes } from "@/lib/slices/recipesSlice";
-import { gql } from "@apollo/client";
-import { createApolloClient } from "@/lib/apolloClient";
 import { useEffect } from "react";
-import { Recipe } from "@/app/types/recipe";
+import { useDispatch, useSelector } from "react-redux";
+import { setRecipes } from "@/lib/slices/recipesSlice";
+import { createApolloClient } from "@/lib/apolloClient";
+import { gql } from "@apollo/client";
 
 const GET_RECIPES = gql`
-  query GetRecipes($title: String!) {
-    searchRecipes(title: $title) {
+  query GetRecipes {
+    recipes {
       id
       title
-      instructions
-      cuisine
-      inspoLink
       ingredients {
         section
         items
       }
+      instructions
+      cuisine
+      inspoLink
     }
   }
 `;
 
-export function useFetchRecipes(search: string, token?: string) {
-  const dispatch = useAppDispatch();
-  const { recipes, lastFetched } = useAppSelector((state) => state.recipes);
+const SEARCH_RECIPES = gql`
+  query SearchRecipes($title: String!) {
+    searchRecipes(title: $title) {
+      id
+      title
+      ingredients {
+        section
+        items
+      }
+      instructions
+      cuisine
+      inspoLink
+    }
+  }
+`;
+
+export function useFetchRecipes(search: string, token?: string, refreshKey = 0) {
+  const dispatch = useDispatch();
+  const recipes = useSelector((state: any) => state.recipes.recipes);
 
   useEffect(() => {
+    if (!token) return;
+
     const fetchRecipes = async () => {
-      if (!token) return;
-
-      // Cache: only fetch if never fetched or older than 5 mins
-      const now = Date.now();
-      if (lastFetched && now - lastFetched < 5 * 60 * 1000) return;
-
       const client = createApolloClient(token);
-      try {
-        const { data } = await client.query<{ searchRecipes: Recipe[] }>({
-          query: GET_RECIPES,
-          variables: { title: search },
-          fetchPolicy: "network-only",
-        });
-        dispatch(setRecipes(data.searchRecipes));
-      } catch (err) {
-        console.error("Failed to fetch recipes:", err);
-      }
+
+      const { data } =
+        search && search.trim() !== ""
+          ? await client.query({
+              query: SEARCH_RECIPES,
+              variables: { title: search },
+              fetchPolicy: "no-cache",
+            })
+          : await client.query({
+              query: GET_RECIPES,
+              fetchPolicy: "no-cache",
+            });
+
+      dispatch(setRecipes(data.searchRecipes || data.recipes));
     };
 
     fetchRecipes();
-  }, [dispatch, search, token, lastFetched]);
+  }, [token, search, refreshKey]);
 
   return recipes;
 }

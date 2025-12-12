@@ -44,13 +44,34 @@ export default function NavBar({ onRecipesUpdated }: NavBarProps) {
             </Button>
           )}
 
-          <Button color="secondary" variant="contained" onClick={() => setLoginOpen(true)} sx={{ ml: 2 }}>
-            {email ? "Logged in" : "Login"}
-          </Button>
+          {token ? (
+  <Button
+    color="secondary"
+    variant="contained"
+    onClick={() => {
+      dispatch(setAuth({ token: "", email: "" }));
+      localStorage.removeItem("token");
+      localStorage.removeItem("userEmail");
+    }}
+    sx={{ ml: 2 }}
+  >
+    Logout
+  </Button>
+) : (
+  <Button color="secondary" variant="contained" onClick={() => setLoginOpen(true)} sx={{ ml: 2 }}>
+    Login
+  </Button>
+)}
+
         </Toolbar>
       </AppBar>
 
-      <RecipeDialog open={dialogOpen} onClose={() => setDialogOpen(false)} onAdded={onRecipesUpdated} />
+     <RecipeDialog
+  open={dialogOpen}
+  onClose={() => setDialogOpen(false)}
+  onSaved={onRecipesUpdated}
+/>
+
       <LoginDialog open={loginOpen} onClose={() => setLoginOpen(false)} onLoginSuccess={handleLoginSuccess} />
     </Box>
   );

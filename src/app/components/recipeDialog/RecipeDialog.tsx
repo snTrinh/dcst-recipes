@@ -19,7 +19,7 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import { gql } from "@apollo/client";
 import { createApolloClient } from "@/lib/apolloClient";
-import { Cuisine } from "@prisma/client";
+import { Cuisine, Recipe } from "@prisma/client";
 import { useAppSelector } from "@/lib/hooks";
 
 interface IngredientSection {
@@ -30,9 +30,11 @@ interface IngredientSection {
 interface RecipeDialogProps {
   open: boolean;
   onClose: () => void;
-  onSaved: () => void; 
-  recipe?: any; 
+  onSaved: () => void;       
+  recipe?: Recipe;           
+  token?: string;
 }
+
 
 const ADD_RECIPE = gql`
   mutation AddRecipe($input: RecipeInput!) {
